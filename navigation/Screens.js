@@ -196,23 +196,24 @@ function HomeStack(props) {
 }
 
 export default function OnboardingStack(props) {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        mode: "card",
-        headerShown: false,
+
+return (
+  <Stack.Navigator
+    screenOptions={{
+      mode: "card",
+      headerShown: false,
+    }}
+  >
+    <Stack.Screen
+      name="Register"
+      component={Register}
+      option={{
+        headerTransparent: true,
       }}
-    >
-      <Stack.Screen
-        name="Onboarding"
-        component={Onboarding}
-        option={{
-          headerTransparent: true,
-        }}
-      />
-      <Stack.Screen name="App" component={AppStack} />
-    </Stack.Navigator>
-  );
+    />
+    <Stack.Screen name="App" component={AppStack} />
+  </Stack.Navigator>
+);
 }
 
 function AppStack(props) {

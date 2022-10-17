@@ -10,11 +10,34 @@ import { Block, Checkbox, Text, theme } from "galio-framework";
 
 import { Button, Icon, Input } from "../components";
 import { Images, argonTheme } from "../constants";
+import { cache, client } from "../constants/graphqlConnection";
+import { gql , useQuery } from '@apollo/client'
 
 const { width, height } = Dimensions.get("screen");
 
-class Register extends React.Component {
+const exampleQuery = gql`query GetAllUsers {
+  getAllUsers {
+    user
+  }
+}
+`
+function exampleFunction(){
+    const { loading, error, data} = useQuery(exampleQuery)
+    if (loading) return 'Loading...';
+    if (error) return `Error! ${error.message}`;
+
+    console.log(data)
+
+    return (        
+      <Text> {(data !== undefined)? data : "error "} </Text>
+      
+    )
+}
+
+class Register extends React.Component {  
   render() {
+    
+    
     return (
       <Block flex middle>
         <StatusBar hidden />
@@ -25,6 +48,7 @@ class Register extends React.Component {
           <Block safe flex middle>
             <Block style={styles.registerContainer}>
               <Block flex={0.25} middle style={styles.socialConnect}>
+                <exampleFunction/>
                 <Text color="#8898AA" size={12}>
                   Sign up with
                 </Text>
