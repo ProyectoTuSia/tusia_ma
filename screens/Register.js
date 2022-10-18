@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   ImageBackground,
@@ -12,32 +12,40 @@ import { Button, Icon, Input } from "../components";
 import { Images, argonTheme } from "../constants";
 import { gql , useQuery } from '@apollo/client'
 
+import jwt_decode from "jwt-decode"
+
+
 const { width, height } = Dimensions.get("screen");
 
-const exampleQuery = gql`query {
-  gm_getGroupGrades(courseCode: 1000004 , groupCode: 2) {
-    course_code
-    username
-    value
+function LoginFunction(props){
+  const { loading, error, data} = useQuery(props.query)
+  if (loading) return 'Loading...';
+  if (error) return `Error! ${error.message}`;
+
+  const decoded = jwt_decode(data.authLogin.toString())
+  return (  
+    <Text>
+      Rol: {decoded.role}
+      {"\n"}
+      Email: {decoded.email}
+    </Text>
+  );
+}
+
+function LoginContent(){
+  const [loginInfo, setLoginInfo] = useState({})
+  const [loginStatus, setLoginStatus] = useState(false)
+  const [userEmail, setUserEmail] = useState('')
+  const [userPass, setUserPass] = useState('')
+
+  /*function sendLoginQuery(){
+    query="query{authLogin(email:"+userEmail.toString()+",password:"+userPass.toString()+")}"
+    return query
   }
-}
-`
-function ExampleFunction(){
-    const { loading, error, data} = useQuery(exampleQuery)
-    if (loading) return 'Loading...';
-    if (error) return `Error! ${error.message}`;
-
-    //console.log(data)
-
-    return (        
-      <>{(data !== undefined) ? data.gm_getGroupGrades[0].username : 'no llego data'}</>
-    );
-}
-
-class Register extends React.Component {  
-  render() {
-    return (
-      <Block flex middle>
+  */
+  
+  return(
+    <Block flex middle>
         <StatusBar hidden />
         <ImageBackground
           source={Images.RegisterBackground}
@@ -61,6 +69,7 @@ class Register extends React.Component {
                   >
                     <Block width={width * 0.8} style={{ marginBottom: 15 }}>
                       <Input
+                        onChangeText = {(texto) => setUserEmail(texto)}
                         borderless
                         placeholder="Correo Institucional"
                         iconContent={
@@ -76,6 +85,7 @@ class Register extends React.Component {
                     </Block>
                     <Block width={width * 0.8}>
                       <Input
+                        onChangeText = {(texto) => setUserPass(texto)}
                         password
                         borderless
                         placeholder="Contraseña"
@@ -91,11 +101,14 @@ class Register extends React.Component {
                       />
                     </Block>
                     <Block middle>
-                      <Button style={styles.createButton}>
+                      <Button style={styles.createButton} onPress = {() => {setLoginStatus(true)}}>
                         <Text bold size={14} color={argonTheme.COLORS.WHITE}>
                           INICIAR SESION
                         </Text>
                       </Button>
+                      <Text>
+                        {(loginStatus) ? <LoginFunction query = {gql`query{authLogin(email:"${userEmail}",password:"${userPass}")}`}/>: 'No estoy logueado'}
+                      </Text>
                     </Block>
                   </KeyboardAvoidingView>
                 </Block>
@@ -103,7 +116,14 @@ class Register extends React.Component {
             </Block>
           </Block>
         </ImageBackground>
-      </Block>
+    </Block>
+  );
+}
+
+class Register extends React.Component {  
+  render() {
+    return (
+      <LoginContent/>
     );
   }
 }
