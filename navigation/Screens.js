@@ -211,7 +211,7 @@ return (
         headerTransparent: true,
       }}
     />
-    <Stack.Screen name="App" component={AppStack} />
+    <Stack.Screen name="Home" component={Home} />
   </Stack.Navigator>
 );
 }

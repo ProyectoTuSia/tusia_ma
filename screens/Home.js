@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Dimensions, ScrollView } from 'react-native';
-import { Block, theme } from 'galio-framework';
+import { Block, theme, Text } from 'galio-framework';
 
 import { Card } from '../components';
 import articles from '../constants/articles';
@@ -13,6 +13,10 @@ class Home extends React.Component {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.articles}>
         <Block flex>
+          <Text>
+            EMAIL: 
+            {JSON.stringify(this.props)}
+          </Text>
           <Card item={articles[0]} horizontal  />
           <Block flex row>
             <Card item={articles[1]} style={{ marginRight: theme.SIZES.BASE }} />
@@ -26,6 +30,7 @@ class Home extends React.Component {
   }
 
   render() {
+    console.log(JSON.stringify(this.props.name))
     return (
       <Block flex center style={styles.home}>
         {this.renderArticles()}

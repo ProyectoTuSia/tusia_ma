@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   ImageBackground,
@@ -12,16 +12,32 @@ import { Button, Icon, Input } from "../components";
 import { Images, argonTheme } from "../constants";
 import { gql , useQuery, useLazyQuery } from '@apollo/client'
 
+import jwtDecode from "jwt-decode";
+
 const { width, height } = Dimensions.get("screen");
 
 function LoginContent(props){
-  const [loginInfo, setLoginInfo] = useState({})
   const [loginStatus, setLoginStatus] = useState(false)
+  
+  //Datos del formulario
   const [userEmail, setUserEmail] = useState('')
   const [userPass, setUserPass] = useState('')
+  
   const LOGINQUERYINFO = gql`query LOGINQUERYINFO($email:String!,$password:String!){authLogin(email:$email,password:$password)}`
   const [loadEntries, { data: entriesData }] = useLazyQuery(LOGINQUERYINFO);
   const entries = entriesData && entriesData.authLogin ? entriesData.authLogin : [];
+
+  //Desencriptar token y solo pasar el usuario
+  useEffect(() => {
+    //Variable para almacenar la token desencriptada
+    let decriptedTokenInfo = {}
+    //Si se realizo el login correctamente
+    if((entries != '') && (entries !== "Wrong password" && entries !== "User not found")){
+      //Desencriptar la token y almacenar la información que contenia
+      decriptedTokenInfo = jwtDecode(entries)
+      props.navigation.navigate('Home', decriptedTokenInfo)
+    }
+  },[loginStatus]);
 
   return(
     <Block flex middle>
@@ -86,7 +102,7 @@ function LoginContent(props){
                         </Text>
                       </Button>
                       <Text color = "red">
-                          {(entries != '') ? ((entries === "Wrong password" || entries === "User not found") ? "Usuario y/o contraseña incorrectas" : props.navigation.navigate('App')) : ''}
+                          {(entries != '' && !loginStatus) ? ((entries === "Wrong password" || entries === "User not found") ? "Usuario y/o contraseña incorrectas" : setLoginStatus(true)) : ''}
                       </Text>
                     </Block>
                   </KeyboardAvoidingView>
