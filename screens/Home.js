@@ -16,10 +16,10 @@ class Home extends React.Component {
           <Text>
             Bienvenido {this.props.route.params.role + " " + this.props.route.params.email.split('@')[0]}
           </Text>
-          <Card item={articles[0]} horizontal  />
+          <Card item={articles[0]} horizontal target = 'Profile' />
           <Block flex row>
-            <Card item={articles[1]} style={{ marginRight: theme.SIZES.BASE }} />
-            <Card item={articles[2]} />
+            <Card item={articles[1]} style={{ marginRight: theme.SIZES.BASE }} target = 'AcademicHistory' />
+            <Card item={articles[2]} target = 'CourseSearch'/>
           </Block>
         </Block>
       </ScrollView>

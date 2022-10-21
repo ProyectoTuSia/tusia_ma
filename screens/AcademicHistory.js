@@ -17,7 +17,7 @@ const { width, height } = Dimensions.get("screen");
 
 const thumbMeasure = (width - 48 - 32) / 3;
 
-class Profile extends React.Component {
+class AcademicHistory extends React.Component {
   render() {
     return (
       <Block flex style={styles.profile}>
@@ -97,7 +97,7 @@ class Profile extends React.Component {
                 <Block flex>
                   <Block middle style={styles.nameInfo}>
                     <Text bold size={28} color="#32325D">
-                      Información Personal
+                      Historia Académica
                     </Text>
                     <Text size={16} color="#32325D" style={{ marginTop: 10 }}>
                       San Francisco, USA
@@ -339,4 +339,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Profile;
+export default AcademicHistory;

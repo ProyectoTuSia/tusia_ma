@@ -2,18 +2,18 @@ export default [
   {
     title: 'Información Personal',
     image: 'https://images.unsplash.com/photo-1516559828984-fb3b99548b21?ixlib=rb-1.2.1&auto=format&fit=crop&w=2100&q=80',
-    cta: 'View article', 
+    cta: 'Ingresar', 
     horizontal: true
   },
   {
     title: 'Historia Académica',
     image: 'https://images.unsplash.com/photo-1519368358672-25b03afee3bf?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2004&q=80',
-    cta: 'View article'
+    cta: 'Ingresar'
   },
   {
     title: 'Buscador de Cursos',
     image: 'https://images.unsplash.com/photo-1500522144261-ea64433bbe27?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2102&q=80',
-    cta: 'View article' 
+    cta: 'Ingresar' 
   },
   {
     title: 'Fashion is a popular style, especially in …',

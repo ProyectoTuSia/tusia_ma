@@ -18,6 +18,8 @@ import Register from "../screens/Register";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createStackNavigator } from "@react-navigation/stack";
+import AcademicHistory from "../screens/AcademicHistory";
+import CourseSearch from "../screens/CourseSearch";
 
 const { width } = Dimensions.get("screen");
 
@@ -212,6 +214,9 @@ return (
       }}
     />
     <Stack.Screen name="Home" component={Home} />
+    <Stack.Screen name="Profile" component={Profile} />
+    <Stack.Screen name="AcademicHistory" component={AcademicHistory} />
+    <Stack.Screen name="CourseSearch" component={CourseSearch} />
   </Stack.Navigator>
 );
 }
