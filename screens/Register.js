@@ -10,40 +10,19 @@ import { Block, Checkbox, Text, theme } from "galio-framework";
 
 import { Button, Icon, Input } from "../components";
 import { Images, argonTheme } from "../constants";
-import { gql , useQuery } from '@apollo/client'
-
-import jwt_decode from "jwt-decode"
-
+import { gql , useQuery, useLazyQuery } from '@apollo/client'
 
 const { width, height } = Dimensions.get("screen");
 
-function LoginFunction(props){
-  const { loading, error, data} = useQuery(props.query)
-  if (loading) return 'Loading...';
-  if (error) return `Error! ${error.message}`;
-
-  const decoded = jwt_decode(data.authLogin.toString())
-  return (  
-    <Text>
-      Rol: {decoded.role}
-      {"\n"}
-      Email: {decoded.email}
-    </Text>
-  );
-}
-
-function LoginContent(){
+function LoginContent(props){
   const [loginInfo, setLoginInfo] = useState({})
   const [loginStatus, setLoginStatus] = useState(false)
   const [userEmail, setUserEmail] = useState('')
   const [userPass, setUserPass] = useState('')
+  const LOGINQUERYINFO = gql`query LOGINQUERYINFO($email:String!,$password:String!){authLogin(email:$email,password:$password)}`
+  const [loadEntries, { data: entriesData }] = useLazyQuery(LOGINQUERYINFO);
+  const entries = entriesData && entriesData.authLogin ? entriesData.authLogin : [];
 
-  /*function sendLoginQuery(){
-    query="query{authLogin(email:"+userEmail.toString()+",password:"+userPass.toString()+")}"
-    return query
-  }
-  */
-  
   return(
     <Block flex middle>
         <StatusBar hidden />
@@ -101,13 +80,13 @@ function LoginContent(){
                       />
                     </Block>
                     <Block middle>
-                      <Button style={styles.createButton} onPress = {() => {setLoginStatus(true)}}>
+                      <Button style={styles.createButton} onPress = {() => loadEntries({variables:{email:userEmail, password:userPass}})}>
                         <Text bold size={14} color={argonTheme.COLORS.WHITE}>
                           INICIAR SESION
                         </Text>
                       </Button>
-                      <Text>
-                        {(loginStatus) ? <LoginFunction query = {gql`query{authLogin(email:"${userEmail}",password:"${userPass}")}`}/>: 'No estoy logueado'}
+                      <Text color = "red">
+                          {(entries != '') ? ((entries === "Wrong password" || entries === "User not found") ? "Usuario y/o contraseña incorrectas" : props.navigation.navigate('App')) : ''}
                       </Text>
                     </Block>
                   </KeyboardAvoidingView>
@@ -123,7 +102,7 @@ function LoginContent(){
 class Register extends React.Component {  
   render() {
     return (
-      <LoginContent/>
+      <LoginContent {... this.props}/>
     );
   }
 }

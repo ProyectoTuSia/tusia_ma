@@ -5,7 +5,7 @@ export const cache = new InMemoryCache();
 export const client = new ApolloClient({
   // Provide required constructor fields
   cache: cache,
-  uri: 'http://192.168.0.9:3001/',
+  uri: 'http://104.198.33.128:3001/',
 
   // Provide some optional constructor fields
   name: 'tusia_ma_client',
