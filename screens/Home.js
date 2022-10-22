@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Dimensions, ScrollView } from 'react-native';
 import { Block, theme, Text } from 'galio-framework';
 
-import { Card } from '../components';
+import { Button, Card } from '../components';
 import articles from '../constants/articles';
 const { width } = Dimensions.get('screen');
 
@@ -20,6 +20,12 @@ class Home extends React.Component {
           <Block flex row>
             <Card item={articles[1]} style={{ marginRight: theme.SIZES.BASE }} target = 'AcademicHistory' />
             <Card item={articles[2]} target = 'CourseSearch'/>
+          </Block>
+
+          <Block flex center>
+            <Button small center color="default" style={styles.optionsButton} onPress = {() => this.props.navigation.navigate('Onboarding')}>
+                Cerrar Sesión
+            </Button>
           </Block>
         </Block>
       </ScrollView>

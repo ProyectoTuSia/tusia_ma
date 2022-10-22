@@ -206,6 +206,14 @@ return (
       headerShown: false,
     }}
   >
+  <Stack.Screen
+      name="Onboarding"
+      component={Onboarding}
+      option={{
+        headerTransparent: true,
+      }}
+    />
+
     <Stack.Screen
       name="Register"
       component={Register}
