@@ -83,7 +83,6 @@ const PROFILEQUERYINFO = gql`query PROFILEQUERYINFO($token:String!){
 }`
 
 function ProfileContent(props){
-  console.log(props.route.params)
   const {loading, error, data} = useQuery(PROFILEQUERYINFO,{variables:{token:props.route.params}})
 
   if(loading){
@@ -93,8 +92,11 @@ function ProfileContent(props){
   }
 
   if(error){
+    //Lanza warning
+    //Volver a la pantalla de inicio porque la token ya expiro
+    //Depronto mandar un mensaje de advertencia en la pantalla principal 
     return(
-      <Text>Error ${error.message}</Text>
+      <>{props.navigation.navigate('Onboarding')}</>
     )
   }
 
