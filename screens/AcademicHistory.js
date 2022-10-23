@@ -127,7 +127,7 @@ function HistoryContent(props){
   
 
   
-  const {data, loading, error} = useQuery(STORIINFO, {variables: { user: "sarodriguezca" }});
+  const {data, loading, error} = useQuery(STORIINFO, {variables: { user: props.route.params }});
   const [getAver, {data: averagesData, loading:averagesLoading, error:averagesError}] = useLazyQuery(AVERAGES);
   const [getSubjects, {data: subjectsData, loading:subjectsLoading, error:subjectsError}] = useLazyQuery(SUBJECTS);
   const [getSummary, {data: summaryData, loading:summaryLoading, error:summaryError}] = useLazyQuery(SUMMARY);
