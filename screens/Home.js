@@ -14,9 +14,9 @@ class Home extends React.Component {
         contentContainerStyle={styles.articles}>
         <Block flex>
           <Text>
-            Bienvenido {this.props.route.params.role + " " + this.props.route.params.email.split('@')[0]}
+            Bienvenido {this.props.route.params.decriptedTokenInfo.role + " " + this.props.route.params.decriptedTokenInfo.email.split('@')[0]}
           </Text>
-          <Card item={articles[0]} horizontal target = 'Profile' />
+          <Card item={articles[0]} horizontal target = 'Profile' token = {this.props.route.params.entries} />
           <Block flex row>
             <Card item={articles[1]} style={{ marginRight: theme.SIZES.BASE }} target = 'AcademicHistory' />
             <Card item={articles[2]} target = 'CourseSearch'/>
