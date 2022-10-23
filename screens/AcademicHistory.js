@@ -98,6 +98,20 @@ const STORIINFO = gql`query AH_getStoriesByUser($user: String) {
     }
   }`
 
+  const CAREER=gql`query AH_getCareerCredits($code: Int) {
+    aH_getCareerCredits(code: $code) {
+      code
+      fundamentacion_obligatoria
+      fundamentacion_optativa
+      disciplinar_obligatoria
+      disciplinar_optativa
+      libre_eleccion
+      nivelacion
+      trabajo_de_grado
+      total
+    }
+  }`
+
 function HistoryContent(props){
   const[Pahook,setPaHook]=useState(0)
   const[Papahook,setPapaHook]=useState(0)
@@ -109,6 +123,7 @@ function HistoryContent(props){
   const[quota, SetQuota]=useState(0)
   const[available, SetAvailable]=useState(0)
   const[credits, setCredits]=useState({})
+  const[career,setCareer]=useState({})
   
 
   
@@ -117,6 +132,7 @@ function HistoryContent(props){
   const [getSubjects, {data: subjectsData, loading:subjectsLoading, error:subjectsError}] = useLazyQuery(SUBJECTS);
   const [getSummary, {data: summaryData, loading:summaryLoading, error:summaryError}] = useLazyQuery(SUMMARY);
   const [getCreditHistory, {data: creditData, loading:creditLoading, error:creditError}] = useLazyQuery(CREDITS);
+  const [getCareer, {data: careerData, loading:careerLoading, error:careerError}] = useLazyQuery(CAREER);
   
   useEffect(() => {
     if(data) {
@@ -124,6 +140,7 @@ function HistoryContent(props){
       getSubjects({variables:{id:data.aH_getStoriesByUser[0].id}})
       getSummary({variables:{id:data.aH_getStoriesByUser[0].id}})
       getCreditHistory({variables:{id:data.aH_getStoriesByUser[0].id}})
+      getCareer({variables:{code:data.aH_getStoriesByUser[0].career_code}})
     
     if (averagesData){
       setPaHook(averagesData.aH_getAverages.PA)
@@ -143,14 +160,17 @@ function HistoryContent(props){
     if(creditData){
       setCredits(creditData.aH_getCreditHistory)
     }
+    if(careerData){
+      setCareer(careerData.aH_getCareerCredits)
+    }
     
   }
    }, [data, averagesData,subjectsData, summaryData])
   
   
-  if(loading||averagesLoading||subjectsLoading||summaryLoading){ return(<Text>Loading...</Text>)}
+  if(loading||averagesLoading||subjectsLoading||summaryLoading||creditLoading||careerLoading){ return(<Text>Loading...</Text>)}
 
-  if(error||averagesError||subjectsError||summaryError){return(<Text>Error ${error.message}</Text>)}
+  if(error||averagesError||subjectsError||summaryError||creditError||careerError){return(<Text>Error ${error.message}</Text>)}
   let usuario=data.aH_getStoriesByUser[0].username 
   let careerName= decodeURIComponent(escape(data.aH_getStoriesByUser[0].career_name))
   let careerCode= data.aH_getStoriesByUser[0].career_code
@@ -167,15 +187,16 @@ function HistoryContent(props){
     temprow.push(decodeURIComponent(escape(subjectList[subj].grade))+" "+decodeURIComponent(escape(subjectList[subj].outcome)))
     tempList.push(temprow)
   }
-  let creditTemp=[
-    ["Fundamentación obligatoria","a",credits.fundamentacion_obligatoria_approved,credits.fundamentacion_obligatoria_pending,credits.fundamentacion_obligatoria_signed,credits.fundamentacion_obligatoria_taken],
-    ["Fundamentación optativa","a",credits.fundamentacion_optativa_approved,credits.fundamentacion_optativa_pending,credits.fundamentacion_optativa_signed,credits.fundamentacion_optativa_taken],
-    ["Disciplinar obligatoria","a",credits.disciplinar_obligatoria_approved,credits.disciplinar_obligatoria_pending,credits.disciplinar_obligatoria_signed,credits.disciplinar_obligatoria_taken],
-    ["Disciplinar optativa","a",credits.disciplinar_optativa_approved,credits.disciplinar_optativa_pending,credits.disciplinar_optativa_signed,credits.disciplinar_optativa_taken],
-    ["Libre elección","a",credits.libre_eleccion_approved,credits.libre_eleccion_pending,credits.libre_eleccion_signed,credits.libre_eleccion_taken],
-    ["Nivelación","a",credits.nivelacion_approved,credits.nivelacion_pending,credits.nivelacion_signed,credits.nivelacion_taken],
-    ["Trabajo de grado","a",credits.trabajo_de_grado_approved,credits.trabajo_de_grado_pending,credits.trabajo_de_grado_signed,credits.trabajo_de_grado_taken],
-    ["Total","a",credits.total_approved,credits.total_pending,credits.total_signed,credits.total_taken],
+  let creditTemp
+  creditTemp=[
+    ["Fundamentación obligatoria",career.fundamentacion_obligatoria,credits.fundamentacion_obligatoria_approved,credits.fundamentacion_obligatoria_pending,credits.fundamentacion_obligatoria_signed,credits.fundamentacion_obligatoria_taken],
+    ["Fundamentación optativa",career.fundamentacion_optativa,credits.fundamentacion_optativa_approved,credits.fundamentacion_optativa_pending,credits.fundamentacion_optativa_signed,credits.fundamentacion_optativa_taken],
+    ["Disciplinar obligatoria",career.disciplinar_obligatoria,credits.disciplinar_obligatoria_approved,credits.disciplinar_obligatoria_pending,credits.disciplinar_obligatoria_signed,credits.disciplinar_obligatoria_taken],
+    ["Disciplinar optativa",career.disciplinar_optativa,credits.disciplinar_optativa_approved,credits.disciplinar_optativa_pending,credits.disciplinar_optativa_signed,credits.disciplinar_optativa_taken],
+    ["Libre elección",career.libre_eleccion,credits.libre_eleccion_approved,credits.libre_eleccion_pending,credits.libre_eleccion_signed,credits.libre_eleccion_taken],
+    ["Nivelación",career.nivelacion,credits.nivelacion_approved,credits.nivelacion_pending,credits.nivelacion_signed,credits.nivelacion_taken],
+    ["Trabajo de grado",career.trabajo_de_grado,credits.trabajo_de_grado_approved,credits.trabajo_de_grado_pending,credits.trabajo_de_grado_signed,credits.trabajo_de_grado_taken],
+    ["Total",career.total,credits.total_approved,credits.total_pending,credits.total_signed,credits.total_taken],
   ]
   
   
