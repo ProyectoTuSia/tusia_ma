@@ -49,23 +49,81 @@ const STORIINFO = gql`query AH_getStoriesByUser($user: String) {
     }
   }`
 
+  const SUMMARY=gql`query AH_getCreditSummary($id: Int) {
+    aH_getCreditSummary(id: $id) {
+      surplus_credits
+      canceled_credits
+      completion_percentage
+      aditional_credits
+      credit_quota
+      available_credits
+    }
+  }`
+
+  const CREDITS=gql`query AH_getCreditHistory($id: Int) {
+    aH_getCreditHistory(id: $id) {
+      id_story
+      fundamentacion_optativa_approved
+      fundamentacion_obligatoria_approved
+      disciplinar_optativa_approved
+      disciplinar_obligatoria_approved
+      nivelacion_approved
+      trabajo_de_grado_approved
+      libre_eleccion_approved
+      total_approved
+      fundamentacion_optativa_pending
+      fundamentacion_obligatoria_pending
+      disciplinar_optativa_pending
+      disciplinar_obligatoria_pending
+      nivelacion_pending
+      trabajo_de_grado_pending
+      libre_eleccion_pending
+      total_pending
+      fundamentacion_optativa_signed
+      fundamentacion_obligatoria_signed
+      disciplinar_optativa_signed
+      disciplinar_obligatoria_signed
+      nivelacion_signed
+      trabajo_de_grado_signed
+      libre_eleccion_signed
+      total_signed
+      fundamentacion_optativa_taken
+      fundamentacion_obligatoria_taken
+      disciplinar_optativa_taken
+      disciplinar_obligatoria_taken
+      nivelacion_taken
+      trabajo_de_grado_taken
+      libre_eleccion_taken
+      total_taken
+    }
+  }`
+
 function HistoryContent(props){
   const[Pahook,setPaHook]=useState(0)
   const[Papahook,setPapaHook]=useState(0)
   const[subjectList, setSubjectList]=useState([])
-  const [tableData, setTableData]=useState([])
-
+  const[surplus, SetSurplus]=useState(0)
+  const[canceled, SetCanceled]=useState(0)
+  const[completition, SetCompletition]=useState(0)
+  const[aditional, SetAditional]=useState(0)
+  const[quota, SetQuota]=useState(0)
+  const[available, SetAvailable]=useState(0)
+  const[credits, setCredits]=useState({})
   
 
   
   const {data, loading, error} = useQuery(STORIINFO, {variables: { user: "sarodriguezca" }});
   const [getAver, {data: averagesData, loading:averagesLoading, error:averagesError}] = useLazyQuery(AVERAGES);
   const [getSubjects, {data: subjectsData, loading:subjectsLoading, error:subjectsError}] = useLazyQuery(SUBJECTS);
+  const [getSummary, {data: summaryData, loading:summaryLoading, error:summaryError}] = useLazyQuery(SUMMARY);
+  const [getCreditHistory, {data: creditData, loading:creditLoading, error:creditError}] = useLazyQuery(CREDITS);
   
   useEffect(() => {
     if(data) {
       getAver({variables: { id: data.aH_getStoriesByUser[0].id }})
       getSubjects({variables:{id:data.aH_getStoriesByUser[0].id}})
+      getSummary({variables:{id:data.aH_getStoriesByUser[0].id}})
+      getCreditHistory({variables:{id:data.aH_getStoriesByUser[0].id}})
     
     if (averagesData){
       setPaHook(averagesData.aH_getAverages.PA)
@@ -74,17 +132,25 @@ function HistoryContent(props){
     if(subjectsData){
       setSubjectList(subjectsData.aH_getStudentSubjects)
     }
-    if(tempList!=''){
-      setTableData(tempList)
-      console.log(tableData)
+    if(summaryData){
+      SetSurplus(summaryData.aH_getCreditSummary.surplus_credits)
+      SetCanceled(summaryData.aH_getCreditSummary.canceled_credits)
+      SetCompletition(summaryData.aH_getCreditSummary.completion_percentage)
+      SetAditional(summaryData.aH_getCreditSummary.aditional_credits)
+      SetQuota(summaryData.aH_getCreditSummary.credit_quota)
+      SetAvailable(summaryData.aH_getCreditSummary.available_credits)
     }
+    if(creditData){
+      setCredits(creditData.aH_getCreditHistory)
+    }
+    
   }
-   }, [data, averagesData,subjectsData])
+   }, [data, averagesData,subjectsData, summaryData])
   
   
-  if(loading||averagesLoading||subjectsLoading){ return(<Text>Loading...</Text>)}
+  if(loading||averagesLoading||subjectsLoading||summaryLoading){ return(<Text>Loading...</Text>)}
 
-  if(error||averagesError||subjectsError){return(<Text>Error ${error.message}</Text>)}
+  if(error||averagesError||subjectsError||summaryError){return(<Text>Error ${error.message}</Text>)}
   let usuario=data.aH_getStoriesByUser[0].username 
   let careerName= decodeURIComponent(escape(data.aH_getStoriesByUser[0].career_name))
   let careerCode= data.aH_getStoriesByUser[0].career_code
@@ -101,6 +167,18 @@ function HistoryContent(props){
     temprow.push(decodeURIComponent(escape(subjectList[subj].grade))+" "+decodeURIComponent(escape(subjectList[subj].outcome)))
     tempList.push(temprow)
   }
+  let creditTemp=[
+    ["Fundamentación obligatoria","a",credits.fundamentacion_obligatoria_approved,credits.fundamentacion_obligatoria_pending,credits.fundamentacion_obligatoria_signed,credits.fundamentacion_obligatoria_taken],
+    ["Fundamentación optativa","a",credits.fundamentacion_optativa_approved,credits.fundamentacion_optativa_pending,credits.fundamentacion_optativa_signed,credits.fundamentacion_optativa_taken],
+    ["Disciplinar obligatoria","a",credits.disciplinar_obligatoria_approved,credits.disciplinar_obligatoria_pending,credits.disciplinar_obligatoria_signed,credits.disciplinar_obligatoria_taken],
+    ["Disciplinar optativa","a",credits.disciplinar_optativa_approved,credits.disciplinar_optativa_pending,credits.disciplinar_optativa_signed,credits.disciplinar_optativa_taken],
+    ["Libre elección","a",credits.libre_eleccion_approved,credits.libre_eleccion_pending,credits.libre_eleccion_signed,credits.libre_eleccion_taken],
+    ["Nivelación","a",credits.nivelacion_approved,credits.nivelacion_pending,credits.nivelacion_signed,credits.nivelacion_taken],
+    ["Trabajo de grado","a",credits.trabajo_de_grado_approved,credits.trabajo_de_grado_pending,credits.trabajo_de_grado_signed,credits.trabajo_de_grado_taken],
+    ["Total","a",credits.total_approved,credits.total_pending,credits.total_signed,credits.total_taken],
+  ]
+  
+  
   //console.log(tempList)
   
 
@@ -108,6 +186,7 @@ function HistoryContent(props){
   
  
   let tableHead= ['Asignatura', 'Créditos', 'Tipología','Período','Calificación']
+  let creditTableHead= ['Tipología', 'Exigidos', 'Aprobados','Pendientes','Inscritos','Cursados']
   
   
 
@@ -207,6 +286,53 @@ function HistoryContent(props){
                         <Rows
                           data={tempList}
                           flexArr={[1,1,2,1,1]}
+                          
+                          style={styles.row}
+                          textStyle={styles.text}
+                        />
+                      </TableWrapper>
+                    </Table>
+                    <Text>
+                      {"\n"}
+                    </Text>
+                    <Block>
+                    <Text
+                    size={20}
+                    color="#525F7F"
+                    style={{ textAlign: "left" }}>
+                      Resumen de créditos:
+                    </Text>
+                    <Text
+                      size={14}
+                      color="#525F7F"
+                      style={{ textAlign: "left" }}
+                    >
+                     Porcentaje de avance: {completition}%
+                     {"\n"}
+                     Créditos excedentes: {surplus}
+                     {"\n"}
+                     Créditos cancelados: {canceled}
+                     {"\n"}
+                     Créditos adicionales: {aditional}
+                     {"\n"}
+                     Créditos disponibles: {available}
+                     {"\n"}
+                     Cupo de créditos: {quota}
+                    </Text>
+                  </Block><Text>
+                      {"\n"}
+                    </Text>
+                  <Table borderStyle={{ borderWidth: 1 }}>
+                      <Row
+                        data={creditTableHead}
+                        flexArr={[1, 1, 1, 1, 1,1]}
+                        style={styles.head}
+                        textStyle={styles.text}
+                      />
+                      <TableWrapper style={styles.wrapper}>
+                        <Rows
+                          data={creditTemp}
+                          flexArr={[1,1,1,1,1,1]}
                           
                           style={styles.row}
                           textStyle={styles.text}
