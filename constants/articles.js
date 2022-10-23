@@ -1,18 +1,18 @@
 export default [
   {
     title: 'Información Personal',
-    image: 'https://images.unsplash.com/photo-1516559828984-fb3b99548b21?ixlib=rb-1.2.1&auto=format&fit=crop&w=2100&q=80',
+    image: 'https://www.entornoturistico.com/wp-content/uploads/2018/11/estudiante-de-turismo-con-libro.jpg',
     cta: 'Ingresar', 
     horizontal: true
   },
   {
     title: 'Historia Académica',
-    image: 'https://images.unsplash.com/photo-1519368358672-25b03afee3bf?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2004&q=80',
+    image: 'https://st2.depositphotos.com/1670531/7436/i/600/depositphotos_74360741-stock-photo-vintage-style-responsive-webdesign-mockup.jpg',
     cta: 'Ingresar'
   },
   {
     title: 'Buscador de Cursos',
-    image: 'https://images.unsplash.com/photo-1500522144261-ea64433bbe27?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2102&q=80',
+    image: 'https://www.cutedigitalmedia.com/blog/wp-content/uploads/2021/05/como-escribir-para-persuadir-en-redes-sociales-1-scaled.jpg',
     cta: 'Ingresar' 
   },
   {
