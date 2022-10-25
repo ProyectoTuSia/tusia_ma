@@ -25,7 +25,7 @@ class Home extends React.Component {
           <Card item={articles[0]} horizontal target = 'Profile' extraData = {this.props.route.params.entries} />
           <Block flex row>
             <Card item={articles[1]} style={{ marginRight: theme.SIZES.BASE }} target = 'AcademicHistory' extraData = {this.props.route.params.decriptedTokenInfo.email.split('@')[0]}/>
-            <Card item={articles[2]} target = 'CourseSearch'/>
+            <Card item={articles[2]} target = 'CourseSearch' extraData={this.props}/>
           </Block>
 
           <Block flex center>

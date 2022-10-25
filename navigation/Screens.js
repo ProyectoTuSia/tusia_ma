@@ -11,7 +11,7 @@ import Elements from "../screens/Elements";
 // screens
 import Home from "../screens/Home";
 import Onboarding from "../screens/Onboarding";
-import Pro from "../screens/Pro";
+import CourseInfo from "../screens/CourseInfo";
 import Profile from "../screens/Profile";
 import React from "react";
 import Register from "../screens/Register";
@@ -223,6 +223,7 @@ return (
     />
     <Stack.Screen name="Home" component={Home} />
     <Stack.Screen name="Profile" component={Profile} />
+    <Stack.Screen name="CourseInfo" component={CourseInfo} />
     <Stack.Screen name="AcademicHistory" component={AcademicHistory} />
     <Stack.Screen name="CourseSearch" component={CourseSearch} />
   </Stack.Navigator>

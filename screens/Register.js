@@ -36,7 +36,7 @@ function LoginContent(props){
     if((entries != '') && (entries !== "Wrong password" && entries !== "User not found")){
       //Desencriptar la token y almacenar la información que contenia
       decriptedTokenInfo = jwtDecode(entries)
-      props.navigation.navigate('Home', {decriptedTokenInfo, entries})
+      props.navigation.navigate('Home', {decriptedTokenInfo, entries,props})
     }
   },[loginStatus]);
 
