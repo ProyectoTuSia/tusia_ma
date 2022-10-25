@@ -9,7 +9,7 @@ import {
   TouchableOpacity
 } from "react-native";
 import { Block, Text, theme, Button as GaButton} from "galio-framework";
-import { Table, TableWrapper, Row, Rows, Col } from 'react-native-table-component';
+import { Table, TableWrapper, Row, Rows, Col, Cell } from 'react-native-table-component';
 import { gql , useQuery, useLazyQuery } from '@apollo/client'
 import { Icon, Button, Input } from "../components";
 import { Images, argonTheme } from "../constants";
@@ -35,6 +35,13 @@ const GET_TYPOLOGY = gql`query GetTypeTypology {
   }
 }`
 
+function RedirectCell(props) {
+  return(
+    <Text style={styles.redirectText} onPress = {()=> props.navigation.navigate('CourseInfo', {props, courseCode:props.text})}> {props.text} </Text>
+  )
+}
+
+
 function CourseSearchContent(props) {
   
   const tableHead = [ 'Código' , 'Asignatura' , 'Créditos' , 'Tipología']
@@ -43,7 +50,10 @@ function CourseSearchContent(props) {
   const { data:coursesInfo } = useQuery(GETALLCOURSESINFO)
   const { data:typologyInfo} = useQuery(GET_TYPOLOGY)
   let courses = coursesInfo && coursesInfo.getSubject ? coursesInfo.getSubject : [];    
-  courses = courses && typologyInfo && typologyInfo.getTypeTypology ? courses.map((course) => [course.Id_subject, course.Name_subject ,course.Credits, typologyInfo.getTypeTypology[course.Typology-1].Name_typology ]) : []    
+  courses = courses && typologyInfo && typologyInfo.getTypeTypology ? courses.map((course) => [<RedirectCell text={course.Id_subject} navigation={props.navigation}/>, course.Name_subject ,course.Credits, typologyInfo.getTypeTypology[course.Typology-1].Name_typology ]) : []   
+  
+  //const redirectCell  = (text) => (<Text style={styles.redirectText}> {text} </Text>);
+
   return (
     <Block flex style={styles.profile}>
       <Block flex>
@@ -92,6 +102,15 @@ function CourseSearchContent(props) {
                           style={styles.head}
                           textStyle={styles.text}
                         />
+
+                        {/*courseList.map((rowdata , index) =>( 
+                          <TableWrapper key ={index} style={styles.wrapper} widthArr>                              
+                            {
+                              rowdata.map((cellData, cellIndex) => ( <Cell key={cellIndex} data={cellIndex === 1 ? <RedirectCell text={cellData} />: cellData} textStyle={styles.text} />))
+                            }
+                          </TableWrapper>
+                          ))*/}
+                        {
                         <TableWrapper style={styles.wrapper}>
                           <Rows
                             data={courseList}
@@ -100,7 +119,7 @@ function CourseSearchContent(props) {
                             style={styles.row}
                             textStyle={styles.text}
                           />
-                        </TableWrapper>
+                        </TableWrapper>}
                   </Table>
                   
                 </Block>
@@ -116,7 +135,7 @@ function CourseSearchContent(props) {
 class CourseSearch extends React.Component {
   render() {
     return (
-      <CourseSearchContent />
+      <CourseSearchContent {...this.props}/>
     )
   }
 }
@@ -186,7 +205,8 @@ const styles = StyleSheet.create({
   row: { height: 35},
   head: { height: 40, backgroundColor: '#CC085E' },
   wrapper: { flexDirection: 'row' },
-  text: { textAlign: 'center', fontSize: 10 }
+  text: { textAlign: 'center', fontSize: 10 },
+  redirectText: { textAlign: 'center', fontSize: 10, color: 'blue', textDecorationLine: 'underline'}
 });
 
 export default CourseSearch;
