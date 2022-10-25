@@ -3,6 +3,7 @@ import {
   StyleSheet,
   ImageBackground,
   Dimensions,
+  Image,
   StatusBar,
   KeyboardAvoidingView
 } from "react-native";
@@ -35,7 +36,7 @@ function LoginContent(props){
     if((entries != '') && (entries !== "Wrong password" && entries !== "User not found")){
       //Desencriptar la token y almacenar la información que contenia
       decriptedTokenInfo = jwtDecode(entries)
-      props.navigation.navigate('Home', decriptedTokenInfo)
+      props.navigation.navigate('Home', {decriptedTokenInfo, entries})
     }
   },[loginStatus]);
 
@@ -48,7 +49,10 @@ function LoginContent(props){
         >
           <Block safe flex middle>
             <Block style={styles.registerContainer}>
-              <Block flex={0.25} middle style={styles.socialConnect}>
+              <Block flex={0.5} middle style={styles.socialConnect}>
+                <Block center>
+                  <Image source={{ uri:'https://lh3.googleusercontent.com/d/1Q7xLn2tppzd3-8ySQi98vKEDI6JcgFRQ'}} style={styles.logo} />
+                </Block>
                 <Text color="#8898AA" size={14}>
                   Bienvenido a TUSIA, Ingresa tus datos.
                 </Text>
@@ -143,6 +147,12 @@ const styles = StyleSheet.create({
     backgroundColor: argonTheme.COLORS.WHITE,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: "#8898AA"
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    zIndex: 2,
+    position: 'relative'
   },
   socialButtons: {
     width: 120,
