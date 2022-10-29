@@ -1,4 +1,4 @@
-import React , {useState} from "react";
+import React , {useEffect, useState} from "react";
 import {
   StyleSheet,
   Dimensions,
@@ -37,29 +37,87 @@ const GET_TYPOLOGY = gql`query GetTypeTypology {
   }
 }`
 
+const GET_GROUPS = gql`query GetGroupBySubject($idSubject: Int!){
+getGroupBySubject(Id_subject: $idSubject) {
+  Id_group
+  Modality
+  Teacher
+  Date_start
+  Duration
+  Date_finish
+  Slots
+  Working_day
+  Id_faculty
+  Id_subject
+  Id_schedule
+}}`
+
+const GET_SCHEDULE = gql`query GetScheduleById($idSchedule: Int!) {
+  getScheduleById(Id_Schedule: $idSchedule) {    
+    day_name
+    Star_time
+    End_time
+    Id_place
+  }
+}`
+
 function CourseInfoContent(props){
   // const {loading, error, data} = useQuery(PROFILEQUERYINFO,{variables:{token:props.route.params}})  
   // console.log(props.route.params.courseCode)
-  // const [basicInfo , setBasicInfo] = useState([])
+  // const [basicInfo , setBasicInfo] = useState([])  
+  const [scheduleList , setScheduleList] = useState([])
+  useEffect(()=> {
+    let schedule=''
+    if (scheduleData){
+      schedule = scheduleData.getScheduleById.day_name + ': ' + 'Start_time' + ' - ' + 'End_time'
+    }    
+    setScheduleList([...scheduleList, schedule])
+  }, [scheduleData])
+
   const {loading:loadingtypology, error:errortypology, data:typologyInfo} = useQuery(GET_TYPOLOGY) 
 
   const {loading:loadingcourseinfo, error:errorcourseinfo, data:courseInfo } = useQuery(GETCOURSEINFO, { variables:{idSubject:props.route.params.courseCode} })
+
+  const {loading:loadingGroupInfo, error:errorGroupInfo, data: groupInfo} = useQuery(GET_GROUPS, { variables:{idSubject:props.route.params.courseCode} }) 
+
+  const [loadScheduleData, { data: scheduleData }] = useLazyQuery(GET_SCHEDULE);
   
   let basicInfo = ['','','','','','','']
   if (courseInfo && courseInfo.getSubjectById && typologyInfo && typologyInfo.getTypeTypology) {
     basicInfo = [courseInfo.getSubjectById.Id_subject, courseInfo.getSubjectById.Name_subject, courseInfo.getSubjectById.Credits, typologyInfo.getTypeTypology[courseInfo.getSubjectById.Typology].Name_typology , courseInfo.getSubjectById.Description, courseInfo.getSubjectById.Id_career.reduce( (total,current) => total + '\n-' + current,'')]
   }
-  if(loadingcourseinfo || loadingtypology){
+
+  let allGroupsInfo = []  
+  if (groupInfo && groupInfo.getGroupBySubject) {
+    groupInfo.getGroupBySubject.forEach((individualGroup)=>{           
+      const group = [individualGroup.Id_group,         
+      individualGroup.Modality,
+      individualGroup.Teacher,
+      individualGroup.Date_start,
+      individualGroup.Duration,
+      individualGroup.Date_finish,
+      individualGroup.Slots,
+      individualGroup.Working_day,
+      individualGroup.Id_faculty,
+      individualGroup.Id_subject,
+      individualGroup.Id_schedule]
+      allGroupsInfo.push(group)
+    })
+    // console.log(allGroupsInfo)
+  }
+
+  console.log(allGroupsInfo)
+  if(loadingcourseinfo || loadingtypology || loadingGroupInfo){
     return(
       <Text>Loading...</Text>
     )
   }
 
-  if(errorcourseinfo || errortypology){
+  if(errorcourseinfo || errortypology || errorGroupInfo){
     return(
-      <Text>Error ${errorcourseinfo ? errorcourseinfo:errortypology}</Text>
+      <Text>Error ${errorcourseinfo ? errorcourseinfo: (errortypology ? errortypology : errorGroupInfo)}</Text>
     )
-  }
+  } 
 
   return (
     <Block flex style={styles.profile}>
@@ -94,12 +152,12 @@ function CourseInfoContent(props){
                     Datos de la asignatura
                   </Text>
                   <Text size={16} color="#32325D" style={{ marginTop: 1, textAlign: "left" }}>      
-                    <Text bold>{'\n'}1.Código:</Text><Text>{basicInfo[0]}{'\n'}</Text>
-                    <Text bold>2.Nombre: </Text><Text>{basicInfo[1]}{'\n'}</Text>            
-                    <Text bold>3.Número de créditos: </Text> <Text>{basicInfo[2]}{'\n'}</Text>
+                    <Text bold>{'\n'}1.Código:</Text> <Text>{basicInfo[0]}{'\n'}</Text>
+                    <Text bold>2.Nombre: </Text> <Text>{basicInfo[1]}{'\n'}</Text>            
+                    <Text bold>3.Número de créditos:</Text> <Text>{basicInfo[2]}{'\n'}</Text>
                     <Text bold>4.Tipología: </Text> <Text>{basicInfo[3]}{'\n'}</Text>
-                    <Text bold>5.Descripción:{'\n'}</Text> <Text style={{paddingLeft: 10}}>{basicInfo[4]}{'\n'}</Text>
-                    <Text bold>6.Carreras a las que se oferta: </Text> <Text>{basicInfo[5]} </Text>
+                    <Text bold>5.Descripción: {'\n'} </Text> <Text style={{paddingLeft: 10}}>{basicInfo[4]}{'\n'}</Text>
+                    <Text bold>6.Carreras a las que se oferta: </Text> <Text>{basicInfo[5]} </Text>                    
                   </Text>
                 </Block>
 
@@ -107,10 +165,33 @@ function CourseInfoContent(props){
                   <Block style={styles.divider} />
                 </Block>      
 
+                <Block>
+                  {(allGroupsInfo) ? allGroupsInfo.map((group) => (
+                    <Block>
+                    <Block middle style={styles.nameInfo}>
+                      <Text bold size={28} center color="#32325D">
+                          Grupo # {String(group[0]).replace(group[9],'')}
+                      </Text>
+                      <Text size={16} color="#32325D" style={{ marginTop: 1, textAlign: "left" }}>      
+                      <Text bold>{'\n'}1.Código:</Text><Text>{group[9]}{'\n'}</Text>
+                        <Text bold>2.Modalidad:</Text><Text>{group[1]}{'\n'}</Text>
+                        <Text bold>3.Profesor(a) encargado: </Text><Text>{group[2]}{'\n'}</Text>            
+                        <Text bold>4.Duración: </Text> <Text>{group[4]}{'\n'}</Text>
+                        <Text bold>5.Fecha de inicio: </Text> <Text>{group[3]}{'\n'}</Text>
+                        <Text bold>6.Fecha de finalización: </Text> <Text>{group[5]}{'\n'}</Text>
+                        <Text bold>7.Número de cupos disponibles:</Text> <Text>{group[6]}{'\n'}</Text>
+                        <Text bold>8.Horario:</Text> <Text>{group[7]}{'\n'}</Text>
+                        <Text bold>9.Carreras a las que se oferta: </Text> <Text>{basicInfo[5]} </Text>                        
+                      </Text>
+                    </Block>                  
+                    <Block middle style={{ marginTop: 10, marginBottom: 0 }}>
+                      <Block style={styles.divider} />
+                    </Block>   
+                    </Block>
+                  )) : (<Text> No </Text>) }
+                </Block>
 
-                <Block middle style={{ marginTop: 10, marginBottom: 0 }}>
-                  <Block style={styles.divider} />
-                </Block>   
+                
 
               </Block>
             </Block>
