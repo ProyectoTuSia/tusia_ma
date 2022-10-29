@@ -22,9 +22,11 @@ class Home extends React.Component {
           <Text center>
           {this.props.route.params.decriptedTokenInfo.role + ": " + this.props.route.params.decriptedTokenInfo.email.split('@')[0]}
           </Text>
-          <Card item={articles[0]} horizontal target = 'Profile' extraData = {this.props.route.params.entries} />
+          <Card item={articles[0]} horizontal target = 'Profile' extraData = {this.props.route.params} />
           <Block flex row>
+            { this.props.route.params.decriptedTokenInfo.role == "Estudiante" &&
             <Card item={articles[1]} style={{ marginRight: theme.SIZES.BASE }} target = 'AcademicHistory' extraData = {this.props.route.params.decriptedTokenInfo.email.split('@')[0]}/>
+            }
             <Card item={articles[2]} target = 'CourseSearch' extraData={this.props}/>
           </Block>
 

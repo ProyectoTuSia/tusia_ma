@@ -83,7 +83,7 @@ const PROFILEQUERYINFO = gql`query PROFILEQUERYINFO($token:String!){
 }`
 
 function ProfileContent(props){
-  const {loading, error, data} = useQuery(PROFILEQUERYINFO,{variables:{token:props.route.params}})
+  const {loading, error, data} = useQuery(PROFILEQUERYINFO,{variables:{token:props.route.params.entries}})
 
   if(loading){
     return(
@@ -101,7 +101,7 @@ function ProfileContent(props){
   }
 
   //La query fue exitosa, usar esta variable para reducir texto abajo
-  const userData = data.authGetAllUsers[0]
+  const userData = data.authGetAllUsers.find((user) => user.basicData.mail === props.route.params.decriptedTokenInfo.email);
 
   return (
     <Block flex style={styles.profile}>

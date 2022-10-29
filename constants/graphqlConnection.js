@@ -11,10 +11,10 @@ export const client = new ApolloClient({
   name: 'tusia_ma_client',
   version: '1.3',
   queryDeduplication: false,
-  //defaultOptions: {
-  //  watchQuery: {
-  //    fetchPolicy: 'cache-and-network',
-  //  },
-  //},
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: 'network-only',
+    },
+  },
 });
 
