@@ -172,9 +172,9 @@ function HistoryContent(props){
 
   if(error||averagesError||subjectsError||summaryError||creditError||careerError){return(<Text>Error ${error.message}</Text>)}
   let usuario=data.aH_getStoriesByUser[0].username 
-  let careerName= decodeURIComponent(escape(data.aH_getStoriesByUser[0].career_name))
+  let careerName= data.aH_getStoriesByUser[0].career_name
   let careerCode= data.aH_getStoriesByUser[0].career_code
-  let faculty=decodeURIComponent(escape(data.aH_getStoriesByUser[0].faculty))
+  let faculty=data.aH_getStoriesByUser[0].faculty
   let state=data.aH_getStoriesByUser[0].state
   let id=data.aH_getStoriesByUser[0].id
   let tempList=[]
@@ -193,11 +193,11 @@ function HistoryContent(props){
 
   for (let subj in subjectList){
     let temprow=[]
-    temprow.push(decodeURIComponent(escape(subjectList[subj].name)))
-    temprow.push(decodeURIComponent(escape(subjectList[subj].credits)))
-    temprow.push(decodeURIComponent(escape(subjectList[subj].tipology)))
-    temprow.push(decodeURIComponent(escape(subjectList[subj].period)))
-    temprow.push(decodeURIComponent(escape(subjectList[subj].grade))+" "+decodeURIComponent(escape(subjectList[subj].outcome)))
+    temprow.push(subjectList[subj].name)
+    temprow.push(subjectList[subj].credits)
+    temprow.push(subjectList[subj].tipology)
+    temprow.push(subjectList[subj].period)
+    temprow.push(subjectList[subj].grade+" "+subjectList[subj].outcome)
     tempList.push(temprow)
   }
   
